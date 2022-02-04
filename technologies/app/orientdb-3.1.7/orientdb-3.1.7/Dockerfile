@@ -40,8 +40,8 @@ VOLUME ["/orientdb/databases"]
 WORKDIR /orientdb
 
 #OrientDb binary
-EXPOSE 9424
+EXPOSE 2424
 #OrientDb http
-EXPOSE 9480
+EXPOSE 2480
 
 ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh"]

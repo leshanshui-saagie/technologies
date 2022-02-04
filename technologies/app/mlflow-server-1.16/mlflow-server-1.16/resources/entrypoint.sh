@@ -23,7 +23,7 @@ if [[ -z ${MLFLOW_BACKEND_STORE_URI} || -z ${MLFLOW_DEFAULT_ARTIFACTORY_ROOT} ]]
 
   Usage : 'MLFLOW_BACKEND_STORE_URI' variable is mandatory and must be set as SQLAlchemy database URI:
   Usage : <dialect>+<driver>://<username>:<password>@<host>:<port>/<database> (MLflow supports the database dialects mysql, mssql, sqlite, and postgresql)
-  Usage : example: mysql://login:password@192.168.56.30:3306/db_name
+  Usage : e.g: mysql://login:password@192.168.56.30:3306/db_name
   Usage : Notice: The Database must be created before launching MlFlow
 
   INFO : MLFLOW_DEFAULT_ARTIFACTORY_ROOT:  variable is mandatory and must be set to an HDFS directory (default directory: e.g. hdfs://cluster:8020/artifactory/mlflow )
