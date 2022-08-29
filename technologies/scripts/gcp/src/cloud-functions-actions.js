@@ -7,26 +7,30 @@ const STATUS_MAPPING = {
     'DEPLOY_IN_PROGRESS': JobStatus.AWAITING,
 };
 
-exports.start = async () => {
-    throw 'Unsupported operation'; // no start have ever been implemented...
+exports.start = async ({connection, parameters}) => {
+    const client = await buildClient(connection);
+    let payload = {};
+    if (parameters.payload) {
+        try {
+            payload = JSON.parse(parameters.payload);
+        } catch (e) {
+            throw Error(`Invalid JSON as payload of the cloud functions: ${e.message}`);
+        }
+    }
+    const functionTmp = parameters.function.split('/')
+    const functionName = functionTmp[functionTmp.length - 1]
+    const response = await client.cloudfunctions.callFunctions(parameters.region, parameters.project, functionName, parameters.payload);
+    return {data: response.data, headers: response.headers};
 };
 
-exports.getStatus = async ({connection, parameters}) => {
-    const client = await buildClient(connection);
-    const {data} = await client.cloudfunctions.projects.locations.functions.get({
-        name: parameters.function,
-    });
-
-    return STATUS_MAPPING[data.status] || JobStatus.KILLED;
+exports.getStatus = async ({payload}) => {
+    return payload.data.errorMessage ? JobStatus.FAILED : JobStatus.SUCCEEDED;
 };
 
-exports.getLogs = async ({connection, parameters}) => {
-    const client = await buildClient(connection);
-    return await client.getLogs({
-        requestBody: {
-            filter: `resource.type=cloud_function resource.labels.function_name=${parameters.function.label} resource.labels.region=${parameters.region} log_name=projects/${parameters.project}/logs/cloudfunctions.googleapis.com%2Fcloud-functions`,
-            orderBy: "timestamp desc",
-            resourceNames: [`projects/${parameters.project}`]
-        },
-    });
+exports.getLogs = async ({payload}) => {
+    const timestamp = Date.parse(payload.headers.date);
+    return [{
+        timestamp: isNaN(timestamp) ? new Date().getTime() : timestamp,
+        log: payload.data.errorMessage ?? payload.data.body
+    }];
 };

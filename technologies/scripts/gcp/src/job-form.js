@@ -88,7 +88,7 @@ exports.getBuckets = async ({connection, parameters}) => {
 
 exports.getFunctions = async ({connection, parameters}) => {
     const client = await buildClient(connection);
-    const {data: {functions}} = await client.cloudfunctions.projects.locations.functions.list(parameters.project, parameters.region);
+    const {data: {functions}} = await client.cloudfunctions.projects.locations.functions.get(parameters.project, parameters.region);
     return functions?.map(({name}) => {
         let arrName = name.split("/")
         return {id: name, label: arrName[arrName.length - 1]}

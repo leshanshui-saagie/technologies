@@ -101,6 +101,19 @@ export const buildClient = async (connection) => {
     const call = (name, method, path, params, data) => requestHttp(client, method, `https://${name}.googleapis.com/${path}`, params, data, headers);
     const regionalCall = (name, region, method, path, params, data) => requestHttp(client, method, `https://${region}-${name}.googleapis.com/${path}`, params, data, headers);
 
+    const callCloudFunctions = (region, projectName, functionName, data) => {
+        const functionUrl = `https://${region}-${projectName}.cloudfunctions.net/${functionName}`
+        const idTokenClient = requestHttp(client, 'GET', 'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity', {'audience': functionUrl}, null, {'Metadata-Flavor': 'Google'})
+        return requestHttp(client, 'POST', functionUrl, null, data, {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`
+    });
+    };
+
+
+
+
     const callCloudDataFusion = (method, action, apiEndpoint, pipeline, path) => requestHttp(client, method, `${apiEndpoint}/v3/namespaces/default/apps/${pipeline}/${path}/${action}`, null, null, headers);
     const callCloudDataPrep = (method, url, path, data) => requestHttp(client, method, `${url}/${path}`, null, data, headers);
     const callKubeflow = (method, instanceUrl, path, params, data) => requestHttp(client, method, `${instanceUrl}/${path}`, params, data, headers);
@@ -130,6 +143,9 @@ export const buildClient = async (connection) => {
         },
         // NB: the nesting of useless properties is just here to imitate the google sdk, so that code can be easily converted
         cloudfunctions: {
+            callFunctions(region, projectName, functionName, data){
+                return callCloudFunctions(region, projectName, functionName, data)
+            },
             projects: {
                 locations: {
                     list(project) {
