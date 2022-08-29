@@ -87,7 +87,7 @@ contexts:
   - id: new-run
     label: New run
     description: "New run context"
-    recommended: false
+    recommended: true
     trustLevel: experimental
     available: true
     connectionTypeId: gcp

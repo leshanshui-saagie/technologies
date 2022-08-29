@@ -10,7 +10,7 @@ contexts:
   - id: default
     label: Default
     description: "Google API V1"
-    recommended: false
+    recommended: true
     trustLevel: experimental
     available: true
     connectionTypeId: gcp
@@ -41,6 +41,9 @@ contexts:
         dependsOn:
           - region
     actions:
+      start:
+        script: .//../../scripts/gcp/dist/cloud-functions-actions.js
+        function: start
       getStatus:
         script: .//../../scripts/gcp/dist/cloud-functions-actions.js
         function: getStatus

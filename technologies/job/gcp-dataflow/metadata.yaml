@@ -62,7 +62,7 @@ contexts:
   - id: new-job
     label: New job
     description: "New Dataflow job creation context"
-    recommended: false
+    recommended: true
     trustLevel: experimental
     available: true
     connectionTypeId: gcp
