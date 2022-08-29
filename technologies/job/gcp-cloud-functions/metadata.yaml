@@ -40,6 +40,9 @@ contexts:
           function: getFunctions
         dependsOn:
           - region
+      - type: TEXT
+        id: payload
+        label: The JSON that you want to provide to your cloud function as input
     actions:
       start:
         script: .//../../scripts/gcp/dist/cloud-functions-actions.js
