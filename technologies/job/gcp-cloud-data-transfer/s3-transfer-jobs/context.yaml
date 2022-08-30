@@ -21,7 +21,7 @@ parameters:
     id: accessKeyID
     label: Access key ID
     mandatory: true
-  - type: PASSWORD
+  - type: TEXT
     id: secretKeyID
     label: Secret access key ID
     mandatory: true
