@@ -4,7 +4,7 @@ id: gcp
 label: Google Cloud Connection
 
 parameters:
-  - type: TEXT
+  - type: PASSWORD
     id: jsonKey
     label: JSON key
     mandatory: true

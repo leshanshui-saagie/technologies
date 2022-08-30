@@ -49,7 +49,6 @@ const oauthConnect = async (client, gcpKey, claims) => {
     const jwtClaims = {
         iss: gcpKey.client_email,
         sub: gcpKey.client_email,
-        scope: 'https://www.googleapis.com/auth/cloud-platform',
         aud: "https://www.googleapis.com/oauth2/v4/token",
         exp: iat + (60 * 60),
         iat,
@@ -87,7 +86,7 @@ export const buildClient = async (connection) => {
 
     let accessToken = null;
     if (gcpKey.type === "service_account") {
-        const data = await oauthConnect(client, gcpKey);
+        const data = await oauthConnect(client, gcpKey, {scope: 'https://www.googleapis.com/auth/cloud-platform'});
         accessToken = data.access_token;
     } else if (gcpKey.type === "authorized_user") {
         const {data} = await requestHttp(client, 'POST', 'https://oauth2.googleapis.com/token', null, {
