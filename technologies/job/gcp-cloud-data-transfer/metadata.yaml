@@ -12,7 +12,7 @@ contexts:
     description: "Azure storage account transfer jobs context"
     recommended: true
     trustLevel: experimental
-    available: true
+    available: false
     connectionTypeId: gcp
     parameters:
       - type: DYNAMIC_SELECT
@@ -88,7 +88,7 @@ contexts:
         id: accessKeyID
         label: Access key ID
         mandatory: true
-      - type: TEXT
+      - type: PASSWORD
         id: secretKeyID
         label: Secret access key ID
         mandatory: true
@@ -183,7 +183,7 @@ contexts:
     description: "TSV file transfer jobs context"
     recommended: true
     trustLevel: experimental
-    available: true
+    available: false
     connectionTypeId: gcp
     parameters:
       - type: DYNAMIC_SELECT
