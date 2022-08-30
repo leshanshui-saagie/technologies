@@ -1,8 +1,8 @@
-version: v1
+version: v2
 id: gcp-cloud-data-transfer
 label: Google Cloud Data Transfer
 description: "Google Cloud Data Transfer service"
-available: false
+available: true
 type: EXTERNAL_JOB
 icon: job
 
@@ -44,9 +44,9 @@ contexts:
         dependsOn:
           - project
       - type: TEXT
-        id: jobName
-        label: Job name
-        mandatory: true
+        id: description
+        label: Description
+        mandatory: false
       - type: TEXT
         id: dailyExecutionHour
         label: Daily execution hour
@@ -102,9 +102,9 @@ contexts:
         dependsOn:
           - project
       - type: TEXT
-        id: jobName
-        label: Job name
-        mandatory: true
+        id: description
+        label: Description
+        mandatory: false
       - type: TEXT
         id: dailyExecutionHour
         label: Daily execution hour
@@ -157,9 +157,9 @@ contexts:
         dependsOn:
           - project
       - type: TEXT
-        id: jobName
-        label: Job name
-        mandatory: true
+        id: description
+        label: Description
+        mandatory: false
       - type: TEXT
         id: dailyExecutionHour
         label: Daily execution hour
@@ -207,9 +207,9 @@ contexts:
         dependsOn:
           - project
       - type: TEXT
-        id: jobName
-        label: Job name
-        mandatory: true
+        id: description
+        label: Description
+        mandatory: false
       - type: TEXT
         id: dailyExecutionHour
         label: Daily execution hour

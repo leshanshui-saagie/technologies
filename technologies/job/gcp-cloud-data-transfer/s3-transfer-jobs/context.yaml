@@ -21,7 +21,7 @@ parameters:
     id: accessKeyID
     label: Access key ID
     mandatory: true
-  - type: TEXT
+  - type: PASSWORD
     id: secretKeyID
     label: Secret access key ID
     mandatory: true
@@ -35,9 +35,9 @@ parameters:
     dependsOn:
       - project
   - type: TEXT
-    id: jobName
-    label: Job name
-    mandatory: true
+    id: description
+    label: Description
+    mandatory: false
   - type: TEXT
     id: dailyExecutionHour
     label: Daily execution hour

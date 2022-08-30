@@ -3,7 +3,7 @@ label: TSV file transfer jobs
 description: "TSV file transfer jobs context"
 recommended: true
 trustLevel: experimental
-available: true
+available: false
 connectionTypeId: gcp
 parameters:
   - type: DYNAMIC_SELECT
@@ -27,9 +27,9 @@ parameters:
     dependsOn:
       - project
   - type: TEXT
-    id: jobName
-    label: Job name
-    mandatory: true
+    id: description
+    label: Description
+    mandatory: false
   - type: TEXT
     id: dailyExecutionHour
     label: Daily execution hour

@@ -32,9 +32,9 @@ parameters:
     dependsOn:
       - project
   - type: TEXT
-    id: jobName
-    label: Job name
-    mandatory: true
+    id: description
+    label: Description
+    mandatory: false
   - type: TEXT
     id: dailyExecutionHour
     label: Daily execution hour

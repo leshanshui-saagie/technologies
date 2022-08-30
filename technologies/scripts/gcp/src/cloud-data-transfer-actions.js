@@ -43,7 +43,7 @@ const start = async (connection, parameters, customConfig) => {
 
     const runObject = {
         projectId: parameters.project,
-        description: parameters.jobName,
+        description: parameters.description,
         status: 'ENABLED',
         schedule: {
             scheduleStartDate: currentDayMonthYear,
@@ -66,7 +66,7 @@ const start = async (connection, parameters, customConfig) => {
         const dailyHour = moment(parameters.dailyExecutionHour, 'HH:mm');
 
         if (!dailyHour.isValid()) {
-            return Response.error('Error while parsing the daily execution hour', new Error('Error while parsing the daily execution hour'));
+            throw new Error('Error while parsing the daily execution hour');
         }
 
         const dailyHourUTC = dailyHour.utc();
@@ -84,9 +84,9 @@ const start = async (connection, parameters, customConfig) => {
         runObject.schedule.scheduleEndDate = currentDayMonthYear;
     }
 
-    const {data} = await client.storagetransfer.transferJobs.create({
-        requestBody: runObject
-    });
+    const {data} = await client.storagetransfer.transferJobs.create(
+        runObject
+    );
 
     return data;
 };
