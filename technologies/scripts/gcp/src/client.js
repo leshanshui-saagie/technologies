@@ -43,6 +43,38 @@ const requestHttp = async (client, method, url, params, data, headers, options) 
     return response;
 };
 
+const oauthConnect = async (client, gcpKey, claims) => {
+    const jtwHeader = {'alg': 'RS256', 'typ': 'JWT'};
+    const iat = Math.floor(Date.now() / 1000);
+    const jwtClaims = {
+        iss: gcpKey.client_email,
+        sub: gcpKey.client_email,
+        scope: 'https://www.googleapis.com/auth/cloud-platform',
+        aud: "https://www.googleapis.com/oauth2/v4/token",
+        exp: iat + (60 * 60),
+        iat,
+        ...claims
+    };
+    const jwtContent =
+        Buffer.from(JSON.stringify(jtwHeader), 'utf-8').toString('base64url')
+        + '.'
+        + Buffer.from(JSON.stringify(jwtClaims), 'utf-8').toString('base64url');
+    const jwtSign = crypto.createSign('RSA-SHA256');
+    jwtSign.update(jwtContent);
+    let jwtSignature ;
+    try {
+        jwtSignature = jwtSign.sign(gcpKey.private_key);
+    } catch (e) {
+        throw Error(`Invalid private key in the JSON key: ${e.message}`, {cause: e});
+    }
+    const jwtToken = jwtContent + '.' + jwtSignature.toString('base64url');
+    const {data} = await requestHttp(client, 'POST', 'https://www.googleapis.com/oauth2/v4/token', null, {
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: jwtToken
+    });
+    return data;
+}
+
 export const buildClient = async (connection) => {
     const client = axios.create({adapter: axiosHttp});
 
@@ -55,32 +87,7 @@ export const buildClient = async (connection) => {
 
     let accessToken = null;
     if (gcpKey.type === "service_account") {
-        const jtwHeader = {'alg': 'RS256', 'typ': 'JWT'};
-        const iat = Math.floor(Date.now() / 1000);
-        const jwtClain = {
-            iss: gcpKey.client_email,
-            scope: 'https://www.googleapis.com/auth/cloud-platform',
-            aud: "https://oauth2.googleapis.com/token",
-            exp: iat + (60 * 60),
-            iat
-        }
-        const jwtContent =
-            Buffer.from(JSON.stringify(jtwHeader), 'utf-8').toString('base64url')
-            + '.'
-            + Buffer.from(JSON.stringify(jwtClain), 'utf-8').toString('base64url');
-        const jwtSign = crypto.createSign('RSA-SHA256');
-        jwtSign.update(jwtContent);
-        let jwtSignature ;
-        try {
-            jwtSignature = jwtSign.sign(gcpKey.private_key);
-        } catch (e) {
-            throw Error(`Invalid private key in the JSON key: ${e.message}`, {cause: e});
-        }
-        const jwtToken = jwtContent + '.' + jwtSignature.toString('base64url');
-        const {data} = await requestHttp(client, 'POST', 'https://oauth2.googleapis.com/token', null, {
-            grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-            assertion: jwtToken
-        });
+        const data = await oauthConnect(client, gcpKey);
         accessToken = data.access_token;
     } else if (gcpKey.type === "authorized_user") {
         const {data} = await requestHttp(client, 'POST', 'https://oauth2.googleapis.com/token', null, {
@@ -101,18 +108,15 @@ export const buildClient = async (connection) => {
     const call = (name, method, path, params, data) => requestHttp(client, method, `https://${name}.googleapis.com/${path}`, params, data, headers);
     const regionalCall = (name, region, method, path, params, data) => requestHttp(client, method, `https://${region}-${name}.googleapis.com/${path}`, params, data, headers);
 
-    const callCloudFunctions = (region, projectName, functionName, data) => {
-        const functionUrl = `https://${region}-${projectName}.cloudfunctions.net/${functionName}`
-        const idTokenClient = requestHttp(client, 'GET', 'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity', {'audience': functionUrl}, null, {'Metadata-Flavor': 'Google'})
+    const callCloudFunctions = async (region, projectName, functionName, data) => {
+        const functionUrl = `https://${region}-${projectName}.cloudfunctions.net/${functionName}`;
+        const idTokenData = await oauthConnect(client, gcpKey, {"target_audience": functionUrl});
         return requestHttp(client, 'POST', functionUrl, null, data, {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`
-    });
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idTokenData.id_token}`
+        });
     };
-
-
-
 
     const callCloudDataFusion = (method, action, apiEndpoint, pipeline, path) => requestHttp(client, method, `${apiEndpoint}/v3/namespaces/default/apps/${pipeline}/${path}/${action}`, null, null, headers);
     const callCloudDataPrep = (method, url, path, data) => requestHttp(client, method, `${url}/${path}`, null, data, headers);
