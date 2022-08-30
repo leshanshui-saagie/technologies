@@ -1,8 +1,8 @@
-version: v1
+version: v2
 id: gcp-cloud-run
 label: Google Cloud Run
 description: "Google Cloud Run services"
-available: false
+available: true
 type: EXTERNAL_JOB
 icon: job
 
