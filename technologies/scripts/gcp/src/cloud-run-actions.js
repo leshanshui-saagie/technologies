@@ -39,7 +39,7 @@ const start = async (client, parameters, containerSpec) => {
 
 exports.startCopy = async ({connection, parameters}) => {
     const client = await buildClient(connection);
-    const {data: serviceData} = client.cloudRun.get(parameters.service);
+    const {data: serviceData} = await client.cloudRun.get(parameters.region, parameters.service);
     return start(client, parameters, {
         ...serviceData.spec.template.spec.containers[0],
         ports: [{containerPort: parameters.containerPort || 8080}]
