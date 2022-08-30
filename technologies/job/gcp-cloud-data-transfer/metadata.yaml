@@ -120,9 +120,6 @@ contexts:
       getStatus:
         script: .//../../scripts/gcp/dist/cloud-data-transfer-actions.js
         function: getStatus
-      getLogs:
-        script: .//../../scripts/gcp/dist/cloud-data-transfer-actions.js
-        function: getLogs
   - id: transfer-jobs
     label: GCS transfer jobs
     description: "Google Cloud Storage transfer jobs gestion context"
