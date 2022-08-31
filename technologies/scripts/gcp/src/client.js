@@ -113,7 +113,7 @@ export const buildClient = async (connection) => {
         return requestHttp(client, 'POST', functionUrl, null, data, {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${idTokenData.id_token}`
+          'Authorization': `Bearer ${idTokenData.id_token}`
         });
     };
 
