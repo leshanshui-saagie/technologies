@@ -296,15 +296,18 @@ export const buildClient = async (connection) => {
             const resLogging = await this.logging.entries.list(data);
             return resLogging?.data?.entries
                 ?.reverse()
-                ?.map(({timestamp, jsonPayload, textPayload}) => {
+                ?.map(({timestamp, protoPayload, jsonPayload, textPayload}) => {
+                    let newTimestamp = Date.parse(timestamp);
                     let logContent = textPayload;
                     if (jsonPayload?.levelname && jsonPayload?.message) {
                         logContent = `[${jsonPayload.levelname}] - ${jsonPayload.message}`;
                     } else if (jsonPayload?.message) {
                         logContent = jsonPayload.message;
+                    } else if (protoPayload?.status?.message){
+                        logContent = protoPayload.status.message;
                     }
-                    return {log: logContent, timestamp};
-                }) ?? [];
+                    return {log: logContent, timestamp:newTimestamp};
+                }).filter((logContent) => logContent.log) ?? [];
         }
     };
 };
