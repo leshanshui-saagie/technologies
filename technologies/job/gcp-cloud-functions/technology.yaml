@@ -4,4 +4,4 @@ label: Google Cloud Functions
 description: ""
 available: true
 type: EXTERNAL_JOB
-iconUrl: ./gcp-cloud-functions.png
+iconPath: ./gcp-cloud-functions.png
