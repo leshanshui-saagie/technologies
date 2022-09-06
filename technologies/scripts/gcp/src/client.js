@@ -201,6 +201,9 @@ export const buildClient = async (connection) => {
                         update(project, region, job, data) {
                             return call('dataflow', 'PUT', `v1b3/projects/${project}/locations/${region}/jobs/${job}`, null, data);
                         },
+                        list(project, region){
+                            return call('dataflow', 'GET', `v1b3/projects/${project}/locations/${region}/jobs`);
+                        },
                     }
                 }
             }

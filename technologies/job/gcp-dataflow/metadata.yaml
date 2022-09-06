@@ -37,7 +37,7 @@ contexts:
         mandatory: true
         dynamicValues:
           script: .//../../scripts/gcp/dist/job-form.js
-          function: getJobs
+          function: getDataFlowJobs
         dependsOn:
           - region
       - type: TEXT

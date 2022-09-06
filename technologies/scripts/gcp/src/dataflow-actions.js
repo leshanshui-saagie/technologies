@@ -110,7 +110,7 @@ exports.getStatus = async ({connection, parameters, payload}) => {
 
 exports.getLogs = async ({connection, parameters, payload}) => {
     const client = await buildClient(connection);
-    return client.getLogs({
+    return await client.getLogs({
         requestBody: {
             filter: `resource.type="dataflow_step" resource.labels.job_id="${payload?.id}" logName="projects/${parameters.project}/logs/dataflow.googleapis.com%2Fjob-message"`,
             orderBy: "timestamp desc",

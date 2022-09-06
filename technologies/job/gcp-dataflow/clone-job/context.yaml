@@ -28,13 +28,13 @@ parameters:
     mandatory: true
     dynamicValues:
       script: ../../../scripts/gcp/dist/job-form.js
-      function: getJobs
+      function: getDataFlowJobs
     dependsOn:
       - region
   - type: TEXT
     id: clonedJobName
     label: Cloned job name
-    mandatory: false
+    mandatory: true
     dependsOn:
       - job
 actions:
